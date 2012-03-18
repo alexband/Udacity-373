@@ -32,7 +32,6 @@ cost_step = 1 # the cost associated with moving from a cell to an adjacent one.
 # ----------------------------------------
 # insert code below
 # ----------------------------------------
-
 def compute_value():
     def motion(state, move, grid):
         row_index = state[0] + move[0]
@@ -41,7 +40,8 @@ def compute_value():
             return []
         return [row_index, column_index]
 
-    value = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
+    value = [[99 for row in range(len(grid[0]))] for col in range(len(grid))]
+    value[goal[0]][goal[1]] = 0
     open_list = []
     used_list = []
     open_list.append([0,goal[0],goal[1]])
