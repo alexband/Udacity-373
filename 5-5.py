@@ -17,8 +17,9 @@
 #(Xi-Yi)**2 --> min 
 #(Yi-Yi+1)**2 --> min
 #
-# Xi means the element in old path
-# Yi means the element in new path
+# Xi means the element in old path path[i][j]
+# Yi means the element in new path newpath[i][j] Yi-1 Yi+1 means newpath[i-1][j]
+# newpath[i+1][j]
 # j means for x cordinate and y cordiante we use the same method
 # tolerance means until the change would not make a difference big than that
 
