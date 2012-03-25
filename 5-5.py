@@ -44,10 +44,12 @@ path = [[0, 0],
 def smooth(path, weight_data = 0.5, weight_smooth = 0.1):
 
     # Make a deep copy of path into newpath
-    newpath = [[0 for col in range(len(path[0]))] for row in range(len(path))]
-    for i in range(len(path)):
-        for j in range(len(path[0])):
-            newpath[i][j] = path[i][j]
+    #newpath = [[0 for col in range(len(path[0]))] for row in range(len(path))]
+    #for i in range(len(path)):
+    #    for j in range(len(path[0])):
+    #        newpath[i][j] = path[i][j]
+    from copy import deepcopy
+    newpath = deepcopy(path)
 
 
     #### ENTER CODE BELOW THIS LINE ###

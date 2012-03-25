@@ -147,7 +147,7 @@ def run(param1, param2, param3):
     myrobot = robot()
     myrobot.set(0.0, 1.0, 0.0)
     speed = 1.0 # motion distance is equal to speed (we assume time = 1)
-    N = 100
+    N = 200
     myrobot.set_steering_drift(10.0 / 180.0 * pi) # 10 degree bias, this will be added in by the move function, you do not need to add it below!
     cte = myrobot.y
     I = 0
