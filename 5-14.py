@@ -1,16 +1,18 @@
 # -----------
 # User Instructions
 #
-# Implement a PD controller by running 100 iterations
+# Implement a P controller by running 100 iterations
 # of robot motion. The steering angle should be set
 # by the parameter tau so that:
 #
-# steering = -tau_p * CTE - tau_d * diff_CTE
-# where differential crosstrack error (diff_CTE)
-# is given by CTE(t) - CTE(t-1)
+# steering = -tau_p * CTE - tau_d * diff_CTE - tau_i * int_CTE
 #
-# Your code should print output that looks like
-# the output shown in the video.
+# where the integrated crosstrack error (int_CTE) is
+# the sum of all the previous crosstrack errors.
+# This term works to cancel out steering drift.
+#
+# Your code should print a list that looks just like
+# the list shown in the video.
 #
 # Only modify code at the bottom!
 # ------------
@@ -125,8 +127,14 @@ class robot:
 
         return res
 
+
+
+
     def __repr__(self):
         return '[x=%.5f y=%.5f orient=%.5f]'  % (self.x, self.y, self.orientation)
+
+
+
 
 ############## ADD / MODIFY CODE BELOW ####################
 
@@ -135,26 +143,28 @@ class robot:
 # run - does a single control run.
 
 
-def run(param1, param2):
+def run(param1, param2, param3):
     myrobot = robot()
     myrobot.set(0.0, 1.0, 0.0)
-    myrobot.set_steering_drift(10.0 / 180.8 * pi)
     speed = 1.0 # motion distance is equal to speed (we assume time = 1)
     N = 100
+    myrobot.set_steering_drift(10.0 / 180.0 * pi) # 10 degree bias, this will be added in by the move function, you do not need to add it below!
     cte = myrobot.y
+    I = 0
     for i in range(N):
         cte_now = myrobot.y
-        steer = -param1 * cte_now - param2 * (cte_now - cte)
+        p = cte
+        d = cte_now - cte
+        I += cte
+        steer = -param1 * p - param2 * d - param3 * I
         myrobot = myrobot.move(steer, speed)
         cte = cte_now
         print myrobot, steer
-        
-    #
-    # Enter code here
-    #
 
-# Call your function with parameters of 0.2 and 3.0 and print results
-run(0.2, 4.0)
+
+# Call your function with parameters of (0.2, 3.0, and 0.004)
+run(0.2, 3.0, 0.004)
+
 
 
 

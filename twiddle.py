@@ -1,18 +1,16 @@
-# -----------
+# ----------------
 # User Instructions
 #
-# Implement a PD controller by running 100 iterations
-# of robot motion. The steering angle should be set
-# by the parameter tau so that:
+# Implement twiddle as shown in the previous two videos.
+# Your accumulated error should be very small!
 #
-# steering = -tau_p * CTE - tau_d * diff_CTE
-# where differential crosstrack error (diff_CTE)
-# is given by CTE(t) - CTE(t-1)
+# Your twiddle function should RETURN the accumulated
+# error. Try adjusting the parameters p and dp to make
+# this error as small as possible.
 #
-# Your code should print output that looks like
-# the output shown in the video.
-#
-# Only modify code at the bottom!
+# Try to get your error below 1.0e-10 with as few iterations
+# as possible (too many iterations will cause a timeout).
+# No cheating!
 # ------------
  
 from math import *
@@ -125,37 +123,83 @@ class robot:
 
         return res
 
+
+
+
     def __repr__(self):
         return '[x=%.5f y=%.5f orient=%.5f]'  % (self.x, self.y, self.orientation)
 
-############## ADD / MODIFY CODE BELOW ####################
 
 # ------------------------------------------------------------------------
 #
 # run - does a single control run.
 
 
-def run(param1, param2):
+def run(params, printflag = False):
     myrobot = robot()
     myrobot.set(0.0, 1.0, 0.0)
-    myrobot.set_steering_drift(10.0 / 180.8 * pi)
-    speed = 1.0 # motion distance is equal to speed (we assume time = 1)
+    speed = 1.0
+    err = 0.0
+    int_crosstrack_error = 0.0
     N = 100
-    cte = myrobot.y
-    for i in range(N):
-        cte_now = myrobot.y
-        steer = -param1 * cte_now - param2 * (cte_now - cte)
+    # myrobot.set_noise(0.1, 0.0)
+    myrobot.set_steering_drift(10.0 / 180.0 * pi) # 10 degree steering error
+
+
+    crosstrack_error = myrobot.y
+
+
+    for i in range(N * 2):
+
+        diff_crosstrack_error = myrobot.y - crosstrack_error
+        crosstrack_error = myrobot.y
+        int_crosstrack_error += crosstrack_error
+
+        steer = - params[0] * crosstrack_error  \
+            - params[1] * diff_crosstrack_error \
+            - int_crosstrack_error * params[2]
         myrobot = myrobot.move(steer, speed)
-        cte = cte_now
-        print myrobot, steer
-        
-    #
-    # Enter code here
-    #
+        if i >= N:
+            err += (crosstrack_error ** 2)
+        if printflag:
+            print myrobot, steer
+    return err / float(N)
 
-# Call your function with parameters of 0.2 and 3.0 and print results
-run(0.2, 4.0)
 
+def twiddle(tol = 0.0000000001): #Make this tolerance bigger if you are timing out!
+############## ADD CODE BELOW ####################
+            
+
+
+    # -------------
+    # Add code here
+    # -------------
+    
+    params = [0,0,0]
+    dp = [1,1,1]
+    best_error = run(params)
+    while sum(dp) > tol:
+        for i in range(len(params)):
+            params[i] += dp[i]
+            error = run(params)
+            if error < best_error:
+                best_error = error
+                dp[i] *= 1.1
+            else:
+                params[i] -= 2*dp[i]
+                error = run(params)
+                if error < best_error:
+                    best_error = error
+                    dp[i] *= 1.1
+                else:
+                    params[i] += dp[i]
+                    dp[i] *= 0.9
+    print params
+    print dp
+    return run(params)
+
+
+twiddle()
 
 
 
