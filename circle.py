@@ -199,9 +199,3 @@ solution_check(smooth(testpath1, testfix1), answer1)
 solution_check(smooth(testpath2, testfix2), answer2)
 
 
-
-for i in range(len(testpath1)):
-    print '['+ ', '.join('%.3f'%x for x in answer1[i]) +'] -> ['+ ', '.join('%.3f'%x for x in smooth(testpath1, testfix1)[i]) +']'
-
-for i in range(len(testpath2)):
-    print '['+ ', '.join('%.3f'%x for x in answer2[i]) +'] -> ['+ ', '.join('%.3f'%x for x in smooth(testpath2, testfix2)[i]) +']'
