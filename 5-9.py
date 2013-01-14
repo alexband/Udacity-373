@@ -14,7 +14,6 @@
 # the output shown in the video. That is, at each step:
 # print myrobot, steering
 #
-# Only modify code at the bottom!
 # ------------
  
 from math import *
